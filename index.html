@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMA Global | Business Directory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #065f46 0%, #059669 100%);
+            --accent: #10b981;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --glass: rgba(255, 255, 255, 0.9);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* Modern Hero Header */
+        header { padding: 80px 0 40px; text-align: center; transition: 0.5s ease; }
+        header.compact { padding: 30px 0 10px; }
+        header.compact h1 { font-size: 1.8rem; }
+        header.compact .subtitle { display: none; }
+
+        h1 { 
+            font-size: 3.5rem; 
+            font-weight: 800; 
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+        }
+
+        .subtitle { color: var(--text-light); font-size: 1.1rem; margin-bottom: 40px; }
+
+        /* Search Bar */
+        .search-area { position: relative; max-width: 650px; margin: 0 auto; }
+        .search-input-wrapper {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 100px;
+            display: flex;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        #search-input {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        /* Business Cards */
+        #results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 40px 0; }
+        .card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            cursor: pointer;
+            border-left: 0px solid var(--accent);
+        }
+        .card:hover { transform: translateY(-5px); border-left: 6px solid var(--accent); box-shadow: var(--shadow-md); }
+        .card-tag { font-size: 0.7rem; font-weight: 800; color: var(--accent); background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 50px; margin-bottom: 15px; display: inline-block; }
+        .card h3 { margin-bottom: 10px; font-size: 1.3rem; }
+
+        /* Detail Page */
+        .detail-view { background: white; border-radius: 28px; overflow: hidden; box-shadow: var(--shadow-md); margin-top: 20px; }
+        .detail-header { background: var(--primary-gradient); padding: 50px 40px; color: white; }
+        .detail-body { padding: 40px; }
+        .label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-light); font-weight: 800; letter-spacing: 1px; display: block; margin-bottom: 5px; }
+        
+        .btn { padding: 12px 25px; border-radius: 50px; font-weight: 700; text-decoration: none; display: inline-flex; transition: 0.3s; border: none; cursor: pointer; }
+        .btn-primary { background: var(--primary-gradient); color: white; }
+        .btn-outline { border: 2px solid var(--accent); color: var(--accent); background: transparent; }
+
+        .hidden { display: none !important; }
+        footer { text-align: center; padding: 60px 0; color: var(--text-light); border-top: 1px solid #eee; margin-top: 50px; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate { animation: fadeInUp 0.4s ease forwards; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header id="main-header">
+            <h1>AMA Global</h1>
+            <p class="subtitle">Discover & Connect with Verified Local Businesses</p>
+            
+            <div class="search-area">
+                <div class="search-input-wrapper">
+                    <input type="text" id="search-input" placeholder="What are you looking for today?">
+                </div>
+                <div style="margin-top: 20px;">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdDwWpuBaEz4so1oaKs3-K-27oERllTrmykUE5E_ivA9xIR8Q/viewform" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Register Your Business →</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Results -->
+            <div id="results-view" class="hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span id="res-count" style="font-weight: 600; color: var(--text-light);"></span>
+                    <button class="btn btn-outline" onclick="resetSearch()" style="padding: 8px 18px; font-size: 0.8rem;">Clear All</button>
+                </div>
+                <div id="results-grid"></div>
+            </div>
+
+            <!-- Detailed Profile -->
+            <div id="details-view" class="hidden animate">
+                <button onclick="backToResults()" style="background:none; border:none; color:var(--text-light); cursor:pointer; margin-bottom:15px; font-weight:700;">← BACK TO LIST</button>
+                <div id="detail-card-content" class="detail-view"></div>
+            </div>
+
+            <!-- No Results -->
+            <div id="empty-state" class="hidden" style="text-align: center; padding: 80px 0;">
+                <p style="color: var(--text-light); font-size: 1.1rem;">No businesses found. Try searching for "Fashion" or "Tech".</p>
+            </div>
+        </main>
+
+        <footer>
+            &copy; 2026 AMA Global Inc. | Built with Trust.
+        </footer>
+    </div>
+
+    <script>
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGpZjDFbL8594fpUAgWbqY6LD4kRk9FSgBZSzkSPavYZqEGBUz0IjjmFADnXl3Ug1XyoWgufJE1lZt/pub?gid=1665479726&single=true&output=csv';
+        let db = [];
+
+        async function loadData() {
+            try {
+                const r = await fetch(CSV_URL);
+                const text = await r.text();
+                const rows = text.split('\n').slice(1);
+                db = rows.map(row => {
+                    const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    return {
+                        name: cl(col[1]),
+                        products: cl(col[2]),
+                        desc: cl(col[3]),
+                        phone: cl(col[4]), // Mapped to your "Phone" field
+                        state: cl(col[5]),
+                        lga: cl(col[6]),
+                        ward: cl(col[7]),
+                        address: cl(col[8])
+                    };
+                }).filter(i => i.name);
+            } catch (e) { console.error("Data load failed."); }
+        }
+
+        const cl = (s) => s ? s.replace(/"/g, '').trim() : '';
+
+        const input = document.getElementById('search-input');
+        input.addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            if(q.length > 1) {
+                const filtered = db.filter(b => 
+                    b.name.toLowerCase().includes(q) || 
+                    b.products.toLowerCase().includes(q) ||
+                    b.desc.toLowerCase().includes(q)
+                );
+                render(filtered);
+            } else if (q === "") {
+                resetSearch();
+            }
+        });
+
+        function render(results) {
+            document.getElementById('main-header').classList.add('compact');
+            const grid = document.getElementById('results-grid');
+            const view = document.getElementById('results-view');
+            const none = document.getElementById('empty-state');
+            
+            grid.innerHTML = '';
+            document.getElementById('details-view').classList.add('hidden');
+
+            if(results.length === 0) {
+                view.classList.add('hidden');
+                none.classList.remove('hidden');
+            } else {
+                none.classList.add('hidden');
+                view.classList.remove('hidden');
+                document.getElementById('res-count').innerText = `${results.length} Businesses Found`;
+
+                results.forEach((b, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'card animate';
+                    card.style.animationDelay = `${i * 0.05}s`;
+                    card.innerHTML = `
+                        <span class="card-tag">${b.state}</span>
+                        <h3>${b.name}</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-light);">${b.products.substring(0, 70)}...</p>
+                        <div style="margin-top: 15px; font-weight: 700; font-size: 0.8rem;">📍 ${b.lga}</div>
+                    `;
+                    card.onclick = () => showDetail(b);
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        function showDetail(b) {
+            document.getElementById('results-view').classList.add('hidden');
+            const view = document.getElementById('details-view');
+            const box = document.getElementById('detail-card-content');
+            view.classList.remove('hidden');
+
+            box.innerHTML = `
+                <div class="detail-header">
+                    <span class="card-tag" style="background:rgba(255,255,255,0.2); color:white;">${b.state}</span>
+                    <h2 style="font-size: 2.2rem; letter-spacing: -1px;">${b.name}</h2>
+                    <p style="opacity: 0.9; font-weight: 600;">${b.lga} | ${b.ward}</p>
+                </div>
+                <div class="detail-body">
+                    <div style="margin-bottom: 25px;">
+                        <span class="label">Offerings</span>
+                        <p style="font-size: 1.1rem; font-weight: 600;">${b.products}</p>
+                    </div>
+                    <div style="margin-bottom: 25px;">
+                        <span class="label">About Business</span>
+                        <p style="color: var(--text-light); line-height: 1.7;">${b.desc}</p>
+                    </div>
+                    <div style="margin-bottom: 35px;">
+                        <span class="label">Physical Address</span>
+                        <p>📍 ${b.address}</p>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <a href="tel:${b.phone}" class="btn btn-primary">Call Now</a>
+                        <a href="https://wa.me/${b.phone.replace(/\D/g,'')}" target="_blank" class="btn btn-outline">WhatsApp</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetSearch() {
+            document.getElementById('main-header').classList.remove('compact');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('details-view').classList.add('hidden');
+            document.getElementById('empty-state').classList.add('hidden');
+            input.value = '';
+        }
+
+        function backToResults() {
+            document.getElementById('details-view').classList.add('hidden');
+            document.getElementById('results-view').classList.remove('hidden');
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
